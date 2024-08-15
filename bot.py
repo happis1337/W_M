@@ -7,6 +7,7 @@ import time
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
+import logging
 load_dotenv()
 
 API_TOKEN = os.getenv('WC_API_TOKEN')
@@ -290,6 +291,7 @@ async def handle_message(message: types.Message):
 # Обработчик ролевых команд
 @dp.message(F.text.in_(list(rp_commands.keys())))
 async def rp_commands_handler(message: types.Message):
+    logging.info(f"Received command: {message.text}")
     command = message.text.strip()
     if command in rp_commands:
         action = rp_commands[command]
@@ -298,6 +300,9 @@ async def rp_commands_handler(message: types.Message):
             await message.answer(f"{message.from_user.full_name} {action} {target}!")
         else:
             await message.answer(f"{message.from_user.full_name} {action} всех!")
+    else:
+        logging.info(f"Command not found in rp_commands: {command}")
+
 
 if __name__ == '__main__':
     # Запуск бота с передачей экземпляра бота
