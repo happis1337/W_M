@@ -192,6 +192,17 @@ async def warn_user(message: types.Message):
         # Здесь вы можете добавить логику для ведения учета предупреждений
     else:
         await message.answer("У вас нет прав на выполнение этой команды.")
+@dp.message(F.text.in_(list(rp_commands.keys())))
+async def rp_commands_handler(message: types.Message):
+    print(f"Received command: {message.text}")
+    command = message.text.strip()
+    if command in rp_commands:
+        action = rp_commands[command]
+        if message.reply_to_message:
+            target = message.reply_to_message.from_user.full_name
+            await message.answer(f"{message.from_user.full_name} {action} {target}!")
+        else:
+            await message.answer(f"{message.from_user.full_name} {action} всех!")
 
 # Команда /unwarn
 @dp.message(Command(commands=['unwarn']))
